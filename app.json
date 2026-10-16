@@ -1,7 +1,11 @@
 {
   "expo": {
     "name": "soundcat",
+<<<<<<< HEAD
     "slug": "snack-f38b0219-49b1-4f56-a577-808b91acada5",
+=======
+    "slug": "snack-c439b92f-d9a7-480c-82eb-becac8664186",
+>>>>>>> 0152e14 (bug fixes)
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

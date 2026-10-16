@@ -12,6 +12,7 @@
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
     "react-native": "0.81.5",
+<<<<<<< HEAD
     "@expo/vector-icons": "^15.0.3",
     "react-native-paper": "4.9.2",
     "react-native-screens": "~4.16.0",
@@ -23,6 +24,19 @@
     "react-native-document-picker": "*",
     "expo-document-picker": "~14.0.8",
     "expo-secure-store": "~15.0.8"
+=======
+    "shaka-player": "4.7.9",
+    "expo-secure-store": "~15.0.8",
+    "@expo/vector-icons": "^15.0.3",
+    "react-native-paper": "4.9.2",
+    "expo-document-picker": "~14.0.8",
+    "react-native-screens": "~4.16.0",
+    "@react-navigation/native": "*",
+    "react-native-track-player": "*",
+    "react-native-document-picker": "*",
+    "@react-navigation/bottom-tabs": "*",
+    "react-native-safe-area-context": "~5.6.0"
+>>>>>>> 0152e14 (bug fixes)
   },
   "private": true
 }

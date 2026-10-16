@@ -1,5 +1,9 @@
 import React, { useContext, useState } from 'react';
+<<<<<<< HEAD
 import { AudioContext } from '../AudioContext.js';
+=======
+import { AudioContext } from '../services/AudioContext.js';
+>>>>>>> 0152e14 (bug fixes)
 import PlaylistTracksWidget from './playlistTracking';
 import {
   View,
@@ -140,7 +144,10 @@ export default function PlaylistScreen() {
         />
       </View>
 
+<<<<<<< HEAD
       {/* FIX 3: Fully configured, visible conditional Modal popup structure */}
+=======
+>>>>>>> 0152e14 (bug fixes)
       <Modal
         animationType="fade"
         transparent={true}
@@ -185,6 +192,10 @@ const localStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121212',
   },
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 0152e14 (bug fixes)
   textInput: {
       width: '100%',
     height: 48,
@@ -320,4 +331,8 @@ const localStyles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 0152e14 (bug fixes)

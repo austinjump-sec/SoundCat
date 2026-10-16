@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext } from 'react';
 import {
   View,
@@ -35,11 +36,57 @@ export default function PlaylistTracksWidget({ playlistId, onClose }) {
     }
   };
 
+=======
+// Add imports
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert, Modal, Pressable } from 'react-native';
+import { AudioContext } from '../services/AudioContext.js';
+
+export default function PlaylistTracksWidget({ playlistId, onClose }) {
+  const { playlists, playTrackDirectly, removeTrackFromPlaylist, moveTrackBetweenPlaylists } = useContext(AudioContext);
+  const [moveModalVisible, setMoveModalVisible] = useState(false);
+  const [trackToMove, setTrackToMove] = useState(null);
+
+  const activePlaylist = playlists.find(pl => pl.id === playlistId);
+  if (!activePlaylist) return <View><Text>Playlist selection not resolved.</Text></View>;
+
+  const handleTrackActions = (item) => {
+    Alert.alert(
+      item.title,
+      undefined,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Move to Playlist',
+          onPress: () => {
+            setTrackToMove(item);
+            setMoveModalVisible(true);
+          },
+        },
+        {
+          text: 'Delete from Playlist',
+          style: 'destructive',
+          onPress: () => {
+            removeTrackFromPlaylist(playlistId, item.id);
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+
+>>>>>>> 0152e14 (bug fixes)
   // Iterator Item Component renderer block
   const renderTrackRow = ({ item, index }) => (
     <TouchableOpacity 
       style={styles.trackRow} 
       onPress={() => handleTrackPress(item)}
+<<<<<<< HEAD
+=======
+
+      onLongPress={() => handleTrackActions(item)}
+>>>>>>> 0152e14 (bug fixes)
       activeOpacity={0.7}
     >
       {/* Index Tracker counter column */}
@@ -58,7 +105,20 @@ export default function PlaylistTracksWidget({ playlistId, onClose }) {
       <Text style={styles.playIcon}>▶</Text>
     </TouchableOpacity>
   );
+<<<<<<< HEAD
 
+=======
+  const handleMoveTo = (targetPlaylistId) => {
+    if (targetPlaylistId === playlistId) {
+      setMoveModalVisible(false);
+      setTrackToMove(null);
+      return;
+    }
+    moveTrackBetweenPlaylists(playlistId, targetPlaylistId, trackToMove.id);
+    setMoveModalVisible(false);
+    setTrackToMove(null);
+  };
+>>>>>>> 0152e14 (bug fixes)
   return (
     <View style={styles.widgetContainer}>
       {/* WIDGET HEADER METADATA PANEL */}
@@ -99,6 +159,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#262626',
     overflow: 'hidden',
+<<<<<<< HEAD
+=======
+    marginTop:70,
+>>>>>>> 0152e14 (bug fixes)
   },
   widgetHeader: {
     flexDirection: 'row',
@@ -175,6 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingHorizontal: 8,
   },
+<<<<<<< HEAD
   errorContainer: {
     padding: 24,
     alignItems: 'center',
@@ -182,6 +247,8 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#666666',
   },
+=======
+>>>>>>> 0152e14 (bug fixes)
   emptyView: {
     alignItems: 'center',
     paddingVertical: 40,
@@ -200,4 +267,8 @@ const styles = StyleSheet.create({
     marginTop: 6,
     lineHeight: 16,
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 0152e14 (bug fixes)

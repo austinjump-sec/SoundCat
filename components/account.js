@@ -24,8 +24,14 @@ export default function SettingsScreen() {
   const [userSession, setUserSession] = useState(null);
 const [customToken, setCustomToken] = useState('');
 const [tokenConfigured, setTokenConfigured] = useState(false);
+<<<<<<< HEAD
 
   useEffect(() => {
+=======
+const [sessionState, setSessionState] = useState('Ghost')
+  useEffect(() => {
+  setSessionState("Ghost")
+>>>>>>> 0152e14 (bug fixes)
   let mounted = true;
 
   getAccessToken()
@@ -34,10 +40,18 @@ const [tokenConfigured, setTokenConfigured] = useState(false);
     })
     .catch(() => {
       if (mounted) setTokenConfigured(false);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0152e14 (bug fixes)
     });
 
   return () => {
     mounted = false;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 0152e14 (bug fixes)
   };
 }, []);
 
@@ -59,6 +73,10 @@ const handleSaveToken = async () => {
     await saveTokens({ accessToken: token });
     setCustomToken('');
     setTokenConfigured(true);
+<<<<<<< HEAD
+=======
+    setSessionState("Connected")
+>>>>>>> 0152e14 (bug fixes)
     Alert.alert('Saved', 'Your token was stored securely on this device.');
   } catch {
     Alert.alert('Error', 'Could not securely save the token.');
@@ -70,7 +88,13 @@ const handleRemoveToken = async () => {
     await clearTokens();
     setCustomToken('');
     setTokenConfigured(false);
+<<<<<<< HEAD
     Alert.alert('Removed', 'Saved credentials were deleted.');
+=======
+    setSessionState('Ghost')
+    Alert.alert('Removed', 'Saved credentials were deleted.');
+
+>>>>>>> 0152e14 (bug fixes)
   } catch {
     Alert.alert('Error', 'Could not remove saved credentials.');
   }
@@ -80,9 +104,14 @@ const handleRemoveToken = async () => {
   const handleCreateGuestAccount = () => {
     const guestPayload = {
       username: `SoundCat_Guest_${Math.floor(1000 + Math.random() * 9000)}`,
+<<<<<<< HEAD
       type: 'Guest Session',
       status: 'Offline Mode Only',
       avatar: require("../assets/bsod.png")
+=======
+      type: 'Ghost Session',
+      status: 'Offline Mode',
+>>>>>>> 0152e14 (bug fixes)
     };
     setUserSession(guestPayload);
     Alert.alert('Session Initialized', `Signed in locally as ${guestPayload.username}`);
@@ -99,6 +128,10 @@ const handleRemoveToken = async () => {
       const supported = await Linking.canOpenURL(OAUTH_URL);
       if (supported) {
         await Linking.openURL(OAUTH_URL);
+<<<<<<< HEAD
+=======
+        setSessionState("Connected")
+>>>>>>> 0152e14 (bug fixes)
       } else {
         Alert.alert('Error', 'Unable to resolve browser launch path to SoundCloud auth servers.');
       }
@@ -162,8 +195,13 @@ const handleRemoveToken = async () => {
               style={[localStyles.actionButton, localStyles.guestBtn]} 
               onPress={handleCreateGuestAccount}
             >
+<<<<<<< HEAD
               <Text style={localStyles.iconSpacer}>👤</Text>
               <Text style={localStyles.guestBtnText}>Continue as Guest</Text>
+=======
+              <Text style={localStyles.iconSpacer}> 👻</Text>
+              <Text style={localStyles.guestBtnText}>Continue as Ghost</Text>
+>>>>>>> 0152e14 (bug fixes)
             </TouchableOpacity>
           </View>
         ) : (
@@ -386,4 +424,8 @@ removeTokenText: {
   color: '#ff6666',
   fontWeight: '600',
 },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 0152e14 (bug fixes)

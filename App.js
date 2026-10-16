@@ -16,7 +16,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import DocumentPicker from 'expo-document-picker';
 // Styles and External Tabs
+<<<<<<< HEAD
 import {AudioContext, AudioProvider} from './AudioContext'
+=======
+import PlaylistPickerModal from './components/playlistModal'
+import {SessionProvider} from './services/context.js'
+import {AudioContext, AudioProvider} from './services/AudioContext'
+>>>>>>> 0152e14 (bug fixes)
 import styles from './components/styles.js';
 import DiscoverScreen from './components/search.js';
 import SettingsScreen from './components/account.js';
@@ -27,13 +33,18 @@ function LibraryScreen() {
   const [setModalVisible, isModalVisible] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null);
   const [isManualPick, isAutoPick] = useState(false)
+<<<<<<< HEAD
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+=======
+  const [selectedPlaylist, setSelectedPlaylist] = useState(['1'])
+>>>>>>> 0152e14 (bug fixes)
 const [playlistMode, setPlaylistMode] = useState(null);
 const {
   playlists,
   addTracksToPlaylist,
 } = useContext(AudioContext);
 
+<<<<<<< HEAD
 const addToPlaylist = () => {
   if (!selectedPlaylist) {
     if (Platform.OS === 'web') {
@@ -91,6 +102,10 @@ const addToPlaylist = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#121212" />
        <Modal
+=======
+const renderModal = () => {
+     <Modal
+>>>>>>> 0152e14 (bug fixes)
         animationType="fade"
         transparent={true}
         visible={isModalVisible}
@@ -105,6 +120,7 @@ const addToPlaylist = () => {
   data={playlists}
   keyExtractor={(item) => String(item.id)}
   renderItem={({ item }) => {
+<<<<<<< HEAD
     const selected = String(item.id) === String(selectedPlaylist);
 
     return (
@@ -112,6 +128,23 @@ const addToPlaylist = () => {
         onPress={() =>
           setSelectedPlaylist(selected ? null : item.id)
         }
+=======
+  const playlistId = String(item.id);
+
+  const selected = selectedPlaylist.some(
+    id => String(id) === playlistId
+  );
+
+    return (
+      <Pressable
+             onPress={() => {
+        setSelectedPlaylist(prev =>
+          prev.some(id => String(id) === playlistId)
+            ? prev.filter(id => String(id) !== playlistId)
+            : [...prev, item.id]
+        );
+      }}
+>>>>>>> 0152e14 (bug fixes)
         style={{
           padding: 16,
           backgroundColor: selected ? '#263626' : '#1a1a1a',
@@ -149,6 +182,69 @@ const addToPlaylist = () => {
           </View>
         </View>
       </Modal>
+<<<<<<< HEAD
+=======
+}
+
+    renderModal()
+const addToPlaylist = () => {
+  if (!selectedPlaylist) {
+    if (Platform.OS === 'web') {
+      window.alert('Please select a playlist.');
+    } else {
+      Alert.alert('Select a playlist', 'Please select a playlist.');
+    }
+    return;
+  }
+
+  if (!selectedFile) {
+    setModalVisible(false)
+    return;
+  }
+
+  try {
+    selectedPlaylist.forEach(playlistId => {addTracksToPlaylist(playlistId, [selectedFile]);})
+    setModalVisible(false);
+    setSelectedFile(null);
+    setPlaylistMode(null);
+  } catch (error) {
+    console.error('Could not add track:', error);
+  }
+};
+  const handleFilePick = async (mode) => {
+    try { 
+      setPlaylistMode(mode)
+    const result = await DocumentPicker.getDocumentAsync({
+      type:'audio/*',
+      copyToCacheDirectory:true
+    })
+    if (result.canceled|| !result.assets?.length) {
+    return
+      }
+    const tracks = result.assets.map((file) => ({
+      id: file.uri,
+      name: file.name,
+      title: file.name.replace(/\.[^.]+$/, ''),
+      artist: 'Unknown Artist',
+      url: file.uri,
+      size: file.size
+        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+        : 'Unknown size',
+      genre: null,
+      artwork: null,
+    }));
+    setSelectedFile(tracks[0]);
+    setSelectedPlaylist([]);
+    setModalVisible(true);
+    renderModal()
+  }catch(err) {
+    Alert.alert('Could not add track:', error);
+  }
+  }
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#121212" />
+>>>>>>> 0152e14 (bug fixes)
       {/* HEADER SECTION WITH CAT LOGO */}
       <View style={styles.header}>
         <Image 
@@ -171,6 +267,7 @@ const addToPlaylist = () => {
           <Text style={styles.importText}>Manual File Import</Text>
           <Text style={styles.subText}>Manually import songs into playlists</Text>
         </TouchableOpacity>
+<<<<<<< HEAD
         {/*
             <TouchableOpacity style={styles.importBox} onPress={()=>handleFilePick('auto')}>
           <Text style={styles.iconPlaceholder}>🤖</Text>
@@ -178,6 +275,8 @@ const addToPlaylist = () => {
           <Text style={styles.subText}>Automatically sort a folder of same audio format files into different playlists based on genre, artists, etc.</Text>
         </TouchableOpacity>
         */}
+=======
+>>>>>>> 0152e14 (bug fixes)
  
 
         {/* FILE PREVIEW INTERFACE STATUS */}
@@ -195,6 +294,10 @@ const addToPlaylist = () => {
 
 export default function App() {
   return (
+<<<<<<< HEAD
+=======
+    <SessionProvider>
+>>>>>>> 0152e14 (bug fixes)
     <AudioProvider>
     <NavigationContainer>
       <Tab.Navigator
@@ -234,5 +337,11 @@ export default function App() {
       </Tab.Navigator>
     </NavigationContainer>
     </AudioProvider>
+<<<<<<< HEAD
   );
 }
+=======
+</SessionProvider>
+  );
+}
+>>>>>>> 0152e14 (bug fixes)

@@ -1,7 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
+<<<<<<< HEAD
 import { AudioContext } from './AudioContext';
+=======
+import { AudioContext } from './services/AudioContext';
+>>>>>>> 0152e14 (bug fixes)
 import PlaylistTracksWidget from './components/playlistTracking';
 
 export default function PlayerScreen() {
@@ -64,4 +68,8 @@ const styles = StyleSheet.create({
   playButton: { backgroundColor: '#39FF14', paddingHorizontal: 32, paddingVertical: 14, borderRadius: 30 },
   playButtonText: { color: '#121212', fontWeight: '700', fontSize: 16 },
   emptyText: { color: '#666' }
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 0152e14 (bug fixes)
