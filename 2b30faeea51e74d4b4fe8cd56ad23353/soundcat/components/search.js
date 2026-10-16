@@ -10,10 +10,8 @@ import {
   ActivityIndicator,
   Keyboard
 } from 'react-native';
+import { getAccessToken } from '../services/tokenStore.js'
 
-// NOTE: Official SoundCloud application registration requires an active 
-// SoundCloud Artist Pro account. Replace this placeholder with your authenticated token.
-const SOUNDCLOUD_ACCESS_TOKEN = 'YOUR_SOUNDCLOUD_ACCESS_TOKEN';
 
 export default function DiscoverScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,6 +20,7 @@ export default function DiscoverScreen() {
   const [errorMsg, setErrorMsg] = useState(null);
 
   const searchSoundCloud = async () => {
+    
     if (!searchQuery.trim()) return;
     
     Keyboard.dismiss();
@@ -29,13 +28,18 @@ export default function DiscoverScreen() {
     setErrorMsg(null);
 
     try {
+      const token = await getAccessToken()
+if (!token){
+  setErrorMsg('Connect SoundCloud or configure a token in Settings.');
+  return;
+}
       // Endpoint syntax follows the SoundCloud Public OpenAPI Specification
       const response = await fetch(
-        `https://soundcloud.com{encodeURIComponent(searchQuery)}&limit=20`,
+        `https://api.soundcloud.com/tracks?q={encodeURIComponent(searchQuery)}&limit=20`,
         {
           method: 'GET',
           headers: {
-            'Authorization': `OAuth ${SOUNDCLOUD_ACCESS_TOKEN}`, // Required Header
+            'Authorization': `OAuth ${token}`, // Required Header
             'Accept': 'application/json; charset=utf-8',
           },
         }

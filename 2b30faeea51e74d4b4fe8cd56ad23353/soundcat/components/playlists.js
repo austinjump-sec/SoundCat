@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AudioContext } from '../AudioContext.js';
+import PlaylistTracksWidget from './playlistTracking';
 import {
   View,
   Image,
   Text,
   StyleSheet,
+  Alert,
   FlatList,
   TouchableOpacity,
   StatusBar,
@@ -17,46 +20,84 @@ import stylesH from './styles.js'; // Imports your global header/logo style toke
 export default function PlaylistScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [playlistTitle, setPlaylistTitle] = useState('')
-  const [playlists, setPlaylists] = useState([
-    { id: '1', title: 'Liked Songs', trackCount: 0 },
-  ]);
+const {
+  playlists,
+  createPlaylist,
+  deletePlaylist,
+  setActivePlaylistId,
+} = useContext(AudioContext);
+ const [selectedPlaylistId, setSelectedPlaylistId] = useState(null)
 
-  const handlePlaylistPress = (playlistTitle) => {
-    alert(`Opening playlist: ${playlistTitle}`);
-  };
+  
   const updatePlaylistName = (newPlaylist) => {
     title=newPlaylist
   }
   // Safe handler to append a new automated playlist to the state
   const createNewPlaylist = () => {
-    const trimmed = playlistTitle.trim()
-    if (!trimmed){
-    alert("Please enter a valid playlist title")
-    return 
+    try {
+    const playlist = createPlaylist(playlistTitle)
+    setPlaylistTitle('')
+    setModalVisible(false)
+    setSelectedPlaylistId(playlist.id)
+    setActivePlaylistId(playlist.id)
+    } catch (err){
+      Alert.alert("Unable to make playlist:", err.message)
     }
-    const newId = (playlists.length + 1).toString();
-    const newPlaylist = {
-      id: newId,
-      title: `${trimmed}`,
-      trackCount: 0
-    };
-    setPlaylists([...playlists, newPlaylist]);
-    setModalVisible(false); // Cleanly closes modal sheet window
   };
 
-  const renderPlaylistItem = ({ item }) => (
-    <TouchableOpacity 
-      style={localStyles.playlistCard} 
-      onPress={() => handlePlaylistPress(item.title)}
-      activeOpacity={0.7}
-    >
-      <View style={localStyles.playlistInfo}>
-        <Text style={localStyles.playlistTitle}>{item.title}</Text>
-        <Text style={localStyles.trackCount}>{item.trackCount} Tracks</Text>
-      </View>
-      <Text style={localStyles.arrow}>></Text>
-    </TouchableOpacity>
+const handlePlaylistPress = (playlist) => {
+  setSelectedPlaylistId(playlist.id);
+  setActivePlaylistId(playlist.id);
+};
+
+const handleDeletePlaylist = (playlist) => {
+  Alert.alert(
+    'Delete playlist',
+    `Delete "${playlist.title}"?`,
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          deletePlaylist(playlist.id);
+
+          if (selectedPlaylistId === playlist.id) {
+            setSelectedPlaylistId(null);
+          }
+        },
+      },
+    ]
   );
+};
+  const renderPlaylistItem = ({ item }) => (
+  <TouchableOpacity
+    style={localStyles.playlistCard}
+    onPress={() => handlePlaylistPress(item)}
+    activeOpacity={0.7}
+  >
+    <View style={localStyles.playlistInfo}>
+      <Text style={localStyles.playlistTitle}>
+        {item.title}
+      </Text>
+
+      <Text style={localStyles.trackCount}>
+        {(item.tracks || []).length}{' '}
+        {(item.tracks || []).length === 1 ? 'Track' : 'Tracks'}
+      </Text>
+    </View>
+
+    <TouchableOpacity
+      onPress={() => handleDeletePlaylist(item)}
+      hitSlop={8}
+      style={{ padding: 8 }}
+    >
+      <Text style={{ color: '#ff6666' }}>Delete</Text>
+    </TouchableOpacity>
+
+    <Text style={localStyles.arrow}>›</Text>
+  </TouchableOpacity>
+);
 
   return (
     <SafeAreaView style={localStyles.container}>
@@ -118,6 +159,19 @@ export default function PlaylistScreen() {
           </View>
         </View>
       </Modal>
+      {selectedPlaylistId && (
+  <View
+    style={[
+      StyleSheet.absoluteFillObject,
+      { zIndex: 10, elevation: 10, padding: 12 },
+    ]}
+  >
+    <PlaylistTracksWidget
+      playlistId={selectedPlaylistId}
+      onClose={() => setSelectedPlaylistId(null)}
+    />
+  </View>
+)}
     </SafeAreaView>
   );
 }
@@ -146,7 +200,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  // FIX 2: Stripped CSS "px" strings out. Used straight number literals.
   pressable: {
     backgroundColor: '#1c1c1c',
     borderRadius: 8,

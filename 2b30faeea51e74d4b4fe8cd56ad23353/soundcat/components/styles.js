@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#222222',
     backgroundColor: '#1a1a1a',
+    zIndex: 1000,
   },
   logo: {
     width: 44,
@@ -89,6 +90,53 @@ const styles = StyleSheet.create({
     color: '#888888',
     fontSize: 13,
     marginTop: 2,
+  },
+    modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    width: '100%',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: '#222222',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  modalAddBtn: {
+    backgroundColor: '#39FF14',
+    width: '100%',
+    height: 48,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  modalAddText: {
+    color: '#121212',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  modalCancelBtn: {
+    width: '100%',
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    color: '#666666',
+    fontWeight: '600',
+    fontSize: 14,
   },
 } );
 export default styles

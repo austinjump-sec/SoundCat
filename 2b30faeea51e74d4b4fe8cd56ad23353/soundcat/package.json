@@ -19,7 +19,10 @@
     "@react-navigation/bottom-tabs": "*",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-track-player": "*",
-    "shaka-player": "4.7.9"
+    "shaka-player": "4.7.9",
+    "react-native-document-picker": "*",
+    "expo-document-picker": "~14.0.8",
+    "expo-secure-store": "~15.0.8"
   },
   "private": true
 }

@@ -1,23 +1,80 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Image, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Linking, 
-  Alert 
-} from 'react-native'; 
-import stylesH from './styles.js'; // Imports your globally created core app styling
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  Text,
 
-// OAuth Configurations matching SoundCloud API specifications
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Linking,
+  ScrollView,
+} from 'react-native';
+
+import {
+  saveTokens,
+  clearTokens,
+  getAccessToken,
+} from '../services/tokenStore.js';
+
+import stylesH from './styles.js';
+
+export default function SettingsScreen() {
+  const [userSession, setUserSession] = useState(null);
+const [customToken, setCustomToken] = useState('');
+const [tokenConfigured, setTokenConfigured] = useState(false);
+
+  useEffect(() => {
+  let mounted = true;
+
+  getAccessToken()
+    .then(token => {
+      if (mounted) setTokenConfigured(Boolean(token));
+    })
+    .catch(() => {
+      if (mounted) setTokenConfigured(false);
+    });
+
+  return () => {
+    mounted = false;
+  };
+}, []);
+
 const CLIENT_ID = 'YOUR_SOUNDCLOUD_CLIENT_ID';
 const REDIRECT_URI = 'soundcat://oauth'; // Custom deep link schema configured for your app
 const OAUTH_URL = `https://soundcloud.com{CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=non-expiring`;
 
-export default function SettingsScreen() {
   // Account session state management
-  const [userSession, setUserSession] = useState(null);
+
+const handleSaveToken = async () => {
+  const token = customToken.trim();
+
+  if (!token) {
+    Alert.alert('Missing token', 'Enter a token first.');
+    return;
+  }
+
+  try {
+    await saveTokens({ accessToken: token });
+    setCustomToken('');
+    setTokenConfigured(true);
+    Alert.alert('Saved', 'Your token was stored securely on this device.');
+  } catch {
+    Alert.alert('Error', 'Could not securely save the token.');
+  }
+};
+
+const handleRemoveToken = async () => {
+  try {
+    await clearTokens();
+    setCustomToken('');
+    setTokenConfigured(false);
+    Alert.alert('Removed', 'Saved credentials were deleted.');
+  } catch {
+    Alert.alert('Error', 'Could not remove saved credentials.');
+  }
+};
 
   // Path 1: Initialize Guest Credentials Local Session
   const handleCreateGuestAccount = () => {
@@ -53,9 +110,23 @@ export default function SettingsScreen() {
   // Path 3: Purge Profile Session State
   const handleSignOut = () => {
     setUserSession(null);
+    handleDisconnectSoundCloud()
   };
+  const handleDisconnectSoundCloud = async () => {
+  try {
+    await clearTokens();
+    setTokenConfigured(false);
+    setCustomToken('');
+    setUserSession(null);
+
+    Alert.alert('Disconnected', 'Saved credentials were removed.');
+  } catch {
+    Alert.alert('Error', 'Could not remove saved credentials.');
+  }
+};
 
   return (        
+    <ScrollView>
     <View style={localStyles.container}>
       {/* HEADER ROW BAR WITH BRAND EMBLEM */}
       <View style={stylesH.header}>
@@ -109,10 +180,53 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
         )}
-      </View>
-    </View>
+  <View style={localStyles.tokenSection}>
+  <Text style={localStyles.tokenTitle}>
+    Advanced API Credentials
+  </Text>
+
+  <Text style={localStyles.tokenDescription}>
+    Store a supported SoundCloud access token securely on this device.
+    Never share your token with anyone.
+  </Text>
+
+  <TextInput
+    style={localStyles.tokenInput}
+    value={customToken}
+    onChangeText={setCustomToken}
+    placeholder="Paste access token"
+    placeholderTextColor="#777777"
+    secureTextEntry
+    autoCapitalize="none"
+    autoCorrect={false}
+    spellCheck={false}
+  />
+
+  <TouchableOpacity
+    style={localStyles.saveTokenButton}
+    onPress={handleSaveToken}
+  >
+    <Text style={localStyles.saveTokenText}>Save Token Securely</Text>
+  </TouchableOpacity>
+
+  {tokenConfigured && (
+    <TouchableOpacity
+      style={localStyles.removeTokenButton}
+      onPress={handleRemoveToken}
+    >
+      <Text style={localStyles.removeTokenText}>
+        Remove Saved Token
+      </Text>
+    </TouchableOpacity>
+  )}
+</View>
+    
+</View>
+</View>
+</ScrollView>
   );
 }
+
 
 // Local UI Styling Sheet Extensions matching your existing Theme palette
 const localStyles = StyleSheet.create({
@@ -122,6 +236,7 @@ const localStyles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    marginTop: 25,
     padding: 24,
     justifyContent: 'center',
   },
@@ -223,4 +338,52 @@ const localStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
+  tokenSection: {
+  marginTop: 24,
+  padding: 18,
+  backgroundColor: '#1a1a1a',
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: '#292929',
+},
+tokenTitle: {
+  color: '#ffffff',
+  fontSize: 17,
+  fontWeight: '700',
+  marginBottom: 8,
+},
+tokenDescription: {
+  color: '#aaaaaa',
+  fontSize: 13,
+  lineHeight: 19,
+  marginBottom: 16,
+},
+tokenInput: {
+  backgroundColor: '#121212',
+  borderWidth: 1,
+  borderColor: '#333333',
+  borderRadius: 8,
+  padding: 12,
+  color: '#ffffff',
+  marginBottom: 12,
+},
+saveTokenButton: {
+  backgroundColor: '#39FF14',
+  borderRadius: 8,
+  padding: 13,
+  alignItems: 'center',
+},
+saveTokenText: {
+  color: '#121212',
+  fontWeight: '700',
+},
+removeTokenButton: {
+  marginTop: 12,
+  padding: 12,
+  alignItems: 'center',
+},
+removeTokenText: {
+  color: '#ff6666',
+  fontWeight: '600',
+},
 });
