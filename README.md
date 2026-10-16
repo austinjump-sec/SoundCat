@@ -1,6 +1,6 @@
 # SoundCat
 
-SoundCat is a privacy-focused alternative to Spotify built around a configurable SoundCloud API key and local audio files. It aims to let you browse, organize, and play music without relying on a heavy server-side stack. The project is intentionally almost entirely client-side and is still in a very early beta stage.
+SoundCat is a privacy-focused music client built around a configurable SoundCloud API key and local audio files. It aims to let you browse, organize, and play music without relying on a heavy server-side stack. The project is intentionally almost entirely client-side and is still in a very early beta stage.
 
 ## What it does
 
@@ -12,7 +12,7 @@ SoundCat is a privacy-focused alternative to Spotify built around a configurable
 
 ## Why it exists
 
-SoundCat is designed for people who want a Spotify-like listening experience without depending on a large, centralized music service. Instead of locking everything into a proprietary platform, SoundCat keeps the core experience local and configurable.
+SoundCat is designed for people who want a Spotify-like listening experience without depending on a large, centralized music service that requires active internet. Instead of locking everything into a proprietary platform, SoundCat keeps the core experience local and configurable.
 
 ## Privacy goals
 
@@ -48,3 +48,8 @@ SoundCat is not a finished product yet. It is best understood as a personal musi
 ## Disclaimer
 
 This is an early-stage project and should be treated as experimental software. It may change significantly over time.
+
+## Future Goals 
+- 2FA
+- Centralized Storage (Currently does not save across same account, different devices)
+- Dynamic Genre Sort on local file import
