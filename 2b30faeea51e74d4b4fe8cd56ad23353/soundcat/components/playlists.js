@@ -20,84 +20,88 @@ import stylesH from './styles.js'; // Imports your global header/logo style toke
 export default function PlaylistScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [playlistTitle, setPlaylistTitle] = useState('')
-const {
-  playlists,
-  createPlaylist,
-  deletePlaylist,
-  setActivePlaylistId,
-} = useContext(AudioContext);
- const [selectedPlaylistId, setSelectedPlaylistId] = useState(null)
+  const {
+    playlists,
+    createPlaylist,
+    deletePlaylist,
+    setActivePlaylistId,
+  } = useContext(AudioContext);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null)
 
   
   const updatePlaylistName = (newPlaylist) => {
-    title=newPlaylist
+    setPlaylistTitle(newPlaylist);
   }
   // Safe handler to append a new automated playlist to the state
   const createNewPlaylist = () => {
     try {
-    const playlist = createPlaylist(playlistTitle)
-    setPlaylistTitle('')
-    setModalVisible(false)
-    setSelectedPlaylistId(playlist.id)
-    setActivePlaylistId(playlist.id)
+      const playlist = createPlaylist(playlistTitle)
+      setPlaylistTitle('')
+      setModalVisible(false)
+      setSelectedPlaylistId(playlist.id)
+      setActivePlaylistId(playlist.id)
     } catch (err){
       Alert.alert("Unable to make playlist:", err.message)
     }
   };
 
-const handlePlaylistPress = (playlist) => {
-  setSelectedPlaylistId(playlist.id);
-  setActivePlaylistId(playlist.id);
-};
+  const handlePlaylistPress = (playlist) => {
+    setSelectedPlaylistId(playlist.id);
+    setActivePlaylistId(playlist.id);
+  };
 
-const handleDeletePlaylist = (playlist) => {
-  Alert.alert(
-    'Delete playlist',
-    `Delete "${playlist.title}"?`,
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          deletePlaylist(playlist.id);
+  const handleDeletePlaylist = (playlist) => {
+    Alert.alert(
+      'Delete playlist',
+      `Delete "${playlist.title}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            try {
+              deletePlaylist(playlist.id);
 
-          if (selectedPlaylistId === playlist.id) {
-            setSelectedPlaylistId(null);
-          }
+              if (selectedPlaylistId === playlist.id) {
+                setSelectedPlaylistId(null);
+              }
+            } catch (err) {
+              Alert.alert('Error', err.message || String(err));
+            }
+          },
         },
-      },
-    ]
-  );
-};
+      ]
+    );
+  };
   const renderPlaylistItem = ({ item }) => (
-  <TouchableOpacity
-    style={localStyles.playlistCard}
-    onPress={() => handlePlaylistPress(item)}
-    activeOpacity={0.7}
-  >
-    <View style={localStyles.playlistInfo}>
-      <Text style={localStyles.playlistTitle}>
-        {item.title}
-      </Text>
-
-      <Text style={localStyles.trackCount}>
-        {(item.tracks || []).length}{' '}
-        {(item.tracks || []).length === 1 ? 'Track' : 'Tracks'}
-      </Text>
-    </View>
-
     <TouchableOpacity
-      onPress={() => handleDeletePlaylist(item)}
-      hitSlop={8}
-      style={{ padding: 8 }}
+      style={localStyles.playlistCard}
+      onPress={() => handlePlaylistPress(item)}
+      activeOpacity={0.7}
     >
-      <Text style={{ color: '#ff6666' }}>Delete</Text>
-    </TouchableOpacity>
+      <View style={localStyles.playlistInfo}>
+        <Text style={localStyles.playlistTitle}>
+          {item.title}
+        </Text>
 
-    <Text style={localStyles.arrow}>›</Text>
-  </TouchableOpacity>
-);
+        <Text style={localStyles.trackCount}>
+          {(item.tracks || []).length}{' '}
+          {(item.tracks || []).length === 1 ? 'Track' : 'Tracks'}
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        onPress={() => handleDeletePlaylist(item)}
+        hitSlop={8}
+        style={{ padding: 8 }}
+      >
+        <Text style={{ color: '#ff6666' }}>Delete</Text>
+      </TouchableOpacity>
+
+      <Text style={localStyles.arrow}>›</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={localStyles.container}>
@@ -125,7 +129,7 @@ const handleDeletePlaylist = (playlist) => {
         
         <FlatList
           data={playlists}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => String(item.id)}
           renderItem={renderPlaylistItem}
           contentContainerStyle={localStyles.listPadding}
           ListEmptyComponent={
@@ -147,7 +151,7 @@ const handleDeletePlaylist = (playlist) => {
           <View style={localStyles.modalContent}>
             <Text style={localStyles.modalTitle}>Create New Playlist</Text>
 
-              <TextInput style={localStyles.textInput} onChangeText={(newPlaylist) => setPlaylistTitle(newPlaylist)}/>
+              <TextInput style={localStyles.textInput} onChangeText={(newPlaylist) => setPlaylistTitle(newPlaylist)} value={playlistTitle} placeholder="Playlist name" placeholderTextColor="#777" />
             
             <TouchableOpacity style={localStyles.modalAddBtn} onPress={createNewPlaylist}>
               <Text style={localStyles.modalAddText}>Generate Playlist</Text>
@@ -160,18 +164,18 @@ const handleDeletePlaylist = (playlist) => {
         </View>
       </Modal>
       {selectedPlaylistId && (
-  <View
-    style={[
-      StyleSheet.absoluteFillObject,
-      { zIndex: 10, elevation: 10, padding: 12 },
-    ]}
-  >
-    <PlaylistTracksWidget
-      playlistId={selectedPlaylistId}
-      onClose={() => setSelectedPlaylistId(null)}
-    />
-  </View>
-)}
+    <View
+      style={[
+        StyleSheet.absoluteFillObject,
+        { zIndex: 10, elevation: 10, padding: 12 },
+      ]}
+    >
+      <PlaylistTracksWidget
+        playlistId={selectedPlaylistId}
+        onClose={() => setSelectedPlaylistId(null)}
+      />
+    </View>
+  )}
     </SafeAreaView>
   );
 }
@@ -196,7 +200,7 @@ const localStyles = StyleSheet.create({
   },
   titleRow: {
     flexDirection: 'row',
-    justifyContent: 'between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
