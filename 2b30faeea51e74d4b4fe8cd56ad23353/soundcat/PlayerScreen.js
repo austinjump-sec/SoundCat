@@ -1,22 +1,28 @@
-import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import { AudioContext } from './AudioContext';
 import PlaylistTracksWidget from './components/playlistTracking';
+
 export default function PlayerScreen() {
-  const [activePlaylistId, setActivePlaylistId] = useState(null)
+  const [activePlaylistId, setActivePlaylistId] = useState(null);
   const handlePlaylistPress = (id) => {
-    setActivePlaylistId(id)
-  }
+    setActivePlaylistId(id);
+  };
+
   // Pull active status and control parameters directly from Context 
   const { currentTrack } = useContext(AudioContext);
 
   const togglePlayback = async () => {
-    const state = await TrackPlayer.getPlaybackState();
-    if (state.state === 'playing') {
-      await TrackPlayer.pause();
-    } else {
-      await TrackPlayer.play();
+    try {
+      const state = await TrackPlayer.getState();
+      if (state === TrackPlayer.STATE_PLAYING) {
+        await TrackPlayer.pause();
+      } else {
+        await TrackPlayer.play();
+      }
+    } catch (err) {
+      console.error('Playback toggle error:', err);
     }
   };
 
@@ -29,7 +35,7 @@ export default function PlayerScreen() {
   }
 
   return (
-    <SafeAreaView style={localStyles.container}>
+    <SafeAreaView style={styles.container}>
       <Image source={{ uri: currentTrack.artwork }} style={styles.albumArt} />
       <Text style={styles.title}>{currentTrack.title}</Text>
       <Text style={styles.artist}>{currentTrack.artist}</Text>
@@ -37,8 +43,8 @@ export default function PlayerScreen() {
       <TouchableOpacity style={styles.playButton} onPress={togglePlayback}>
         <Text style={styles.playButtonText}>Play / Pause</Text>
       </TouchableOpacity>
-  
-     {activePlaylistId && (
+
+      {activePlaylistId && (
         <View style={StyleSheet.absoluteFillObject}> 
           <PlaylistTracksWidget 
             playlistId={activePlaylistId} 
@@ -46,7 +52,7 @@ export default function PlayerScreen() {
           />
         </View>
       )}
-      </SafeAreaView>
+    </SafeAreaView>
   );
 }
 
